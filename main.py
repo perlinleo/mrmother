@@ -44,6 +44,10 @@ async def reply(message: types.Message):
     commands = merge_request_handler.setup(commands, message=message)
     commands = developer_handler.setup(commands, message=message)
     try:
+        if Config().get("developer_chat_id") != str(message.chat.id):
+            logging.log(level=logging.INFO, msg=f'Access try {message.chat.username}')
+            await message.answer("No access")
+            return
         if message.text in commands.keys():
             await commands[message.text]
         elif not message.text.startswith("/"):
